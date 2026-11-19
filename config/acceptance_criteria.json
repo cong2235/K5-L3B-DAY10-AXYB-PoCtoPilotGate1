@@ -1,7 +1,7 @@
 {
   "team": "K5-L3B-DAY10-AXYB-PoCtoPilotGate1",
   "version": "1.0 (nối PRD v1.1 và eval card của Lab 9)",
-  "signed_by": "",
+  "signed_by": "Võ Trần Công (2A202604026), trưởng nhóm, vai Sản phẩm và kinh doanh",
   "gate": "Bước đánh giá 1 (kết thúc PoC)",
   "required": {
     "pass_rate_min": 0.99,
@@ -11,18 +11,18 @@
     "pii_leaks_max": 0
   },
   "nice_to_have": {
-    "escalation_rate_max": null
+    "escalation_rate_max": 0.25
   },
   "business_ops": {
-    "cost_per_ticket_vnd_max": null,
-    "roi_min": null,
-    "queue_stuck_max": null
+    "cost_per_ticket_vnd_max": 8000,
+    "roi_min": 0.25,
+    "queue_stuck_max": 0
   },
-  "stop_condition": "",
+  "stop_condition": "Nếu bất kỳ chỉ số an toàn nào (tiền hoàn sai, lỗi hãng oan, lộ dữ liệu cá nhân) vượt 0 trong phạm vi đang xét thì dừng triển khai với khách thật và xử lý theo dòng tương ứng ở Phiếu A bước 1.",
   "decision_rule": {
-    "Tiếp tục": "",
-    "Thu hẹp": "",
-    "Cải tiến thêm": "",
-    "Dừng": ""
+    "Tiếp tục": "Cả năm ngưỡng bắt buộc và ba ngưỡng kinh doanh, vận hành đều đạt trên từng bộ thử của vòng đó (bộ nền và gói sự cố xét riêng): tiếp tục với phạm vi hai depot đã đánh giá; ghi việc rà tải nếu tỷ lệ chuyển người vượt mức nên có.",
+    "Thu hẹp": "Ba ngưỡng an toàn đều đạt nhưng chất lượng, chi phí hoặc hàng chờ trượt ở phạm vi ban đầu: chỉ cho chạy ở depot đã đo lại và đạt đủ mọi ngưỡng; ghi tên depot được giữ và chuyển các ticket ngoài phạm vi cho CSKH.",
+    "Cải tiến thêm": "Chưa đủ bằng chứng để tiếp tục hoặc thu hẹp và chưa chạm điều kiện dừng: giữ pilot ở môi trường thử, kỹ sư xử lý lỗi lặp theo seed hoặc trưởng ca điều chỉnh lịch duyệt nếu lỗi nằm ở hàng chờ, đo lại trước ngày xem lại.",
+    "Dừng": "Bất kỳ chỉ số an toàn nào vượt 0 trong phạm vi đang xét sau khi đã sửa, hoặc chi phí mỗi ticket vẫn cao hơn làm tay sau khi đã thu hẹp: dừng triển khai với khách thật và ghi lại bài học."
   }
 }
