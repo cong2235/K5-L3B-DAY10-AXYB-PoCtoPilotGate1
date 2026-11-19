@@ -232,8 +232,8 @@ Trạng thái: **Xong** (có bằng chứng) · **Chưa** · **Không áp dụng
 | 4 | Quyền hạn | `config/switches.json` + guard trước lệnh ghi; thẻ S2, S8 có thêm mục mức kiểm soát (Phiếu C mục C3) | Đúng phê duyệt và công tắc tắt có tác dụng | Chưa | Cổng 2(d) kiểm phê duyệt (B7.1); chưa thử tắt thao tác ghi bằng `config/switches.json` | Hà Văn Khánh Đạt |
 | 5 | Hiệu năng, hạ tầng | Đội tự ước tính; HAZOP guideword INCAPABLE: LLM không trả lời thì sao; số người duyệt và số ca mỗi giờ | Tải duyệt giờ cao điểm và lỗi LLM | Chưa | Có ước tính B7.6; bộ nền không có lỗi 429 (`llm_degraded_rate` = 0); chưa đo tải thật | Nguyễn Đức Khương Lam |
 | 6 | Chi phí | Khối "kinh doanh và vận hành" của report: chi phí mỗi ticket so với làm tay, ROI, tiền LLM ticket đắt nhất; `config/operating_gates.json` mục `business` | Chi phí, ROI và trần hoàn | Xong | Prepared: 4.202 đ/ticket, ROI 1,38; mục `business` đã điền (B7.4) | Võ Trần Công |
-| 7 | Vận hành | Runbook (Phiếu B mục B7.5–B7.6) + `config/operating_gates.json` mục `operations` (PIC, người duyệt, số người trực, điều kiện dừng, kênh báo tin) + metric trong `monitors.py` | Diễn tập báo đỏ và bàn giao | Chưa | Runbook B7.5–B7.6 và mục `operations` đã có; chưa diễn tập | Trần Huy Bảo |
-| 8 | Con người, pháp lý | Bên thứ ba (hãng, tài xế, shop, người nhận quà, người đứng tên duyệt); `config/operating_gates.json` mục `legal`; thẻ S6, S7, S8 có mục riêng ở Phiếu C mục C3 | Bảo vệ người nhận quà và căn cứ quy lỗi hãng | Xong | Mục `legal` đã điền; cổng 3 (B7.1); `pii_leaks` = 0, `wrongful_carrier_faults` = 0 ở prepared; B7.3 vé 2 | Trần Huy Bảo |
+| 7 | Vận hành | Runbook (Phiếu B mục B7.5–B7.6) + `config/operating_gates.json` mục `operations` (PIC, người duyệt, số người trực, điều kiện dừng, kênh báo tin) + metric trong `monitors.py` | Diễn tập báo đỏ và bàn giao | Chưa | Runbook B7.5–B7.6 và mục `operations` đã có; chưa diễn tập | Từ Huy Bảo |
+| 8 | Con người, pháp lý | Bên thứ ba (hãng, tài xế, shop, người nhận quà, người đứng tên duyệt); `config/operating_gates.json` mục `legal`; thẻ S6, S7, S8 có mục riêng ở Phiếu C mục C3 | Bảo vệ người nhận quà và căn cứ quy lỗi hãng | Xong | Mục `legal` đã điền; cổng 3 (B7.1); `pii_leaks` = 0, `wrongful_carrier_faults` = 0 ở prepared; B7.3 vé 2 | Từ Huy Bảo |
 | 9 | Quyết định | Câu tiêu chí (Phiếu A mục A4) + hash Bản tiêu chí đã ký + quyết định Gate 1 (Phiếu B mục B8, Phiếu C mục C12) | Có chữ ký, checkpoint và v1 có căn cứ | Chưa | Ký `cfa378f` (hash `d772353f`), chốt vòng 1 `ccbbeabb`; v1 ở B8 chưa viết | Võ Trần Công |
 
 Ô "Chưa" có rủi ro cao → chuyển thành một dòng Risk register (Phiếu C mục C10).
@@ -341,7 +341,7 @@ nguyên nhân trong tracking). Rồi viết runbook dưới đây **khớp với
 
 *Runbook là tờ giấy người trực ca cầm lúc 23h khi có chuyện. Nó trả lời: nhìn con số nào, ngưỡng nào thì làm gì, ai được quyết.
 Phần 1–3 và mục Giờ cao điểm viết ở vòng 1. Phần 4–5 viết ở vòng 2 (Phiếu C mục C11). Mọi con số phải khớp `config/operating_gates.json` và report.*
-*Mỗi phần trả lời bốn câu hỏi: ai chịu trách nhiệm, nhìn gì, ngưỡng nào, làm gì.* **Người viết (vai Vận hành và pháp lý):** Trần Huy Bảo
+*Mỗi phần trả lời bốn câu hỏi: ai chịu trách nhiệm, nhìn gì, ngưỡng nào, làm gì.* **Người viết (vai Vận hành và pháp lý):** Từ Huy Bảo
 
 #### Runbook 1 · Ai chịu trách nhiệm
 
@@ -423,7 +423,7 @@ bao nhiêu thời gian? (3) Có phần nào của dự án không nên làm ti�
 | Bằng chứng 3 | Ba ngưỡng kinh doanh, vận hành đạt ở prepared: chi phí 4.202 đ/ticket ≤ 8.000 đ · ROI 1,38 ≥ 0,25 · 0 ca ùn ≤ 0; độ phủ pilot 1.0 (22/22 ticket). Đo lại trên máy khác cho cùng số: `R-base-prepared-20261119-172242-bf3aef`. |
 | Khớp dòng nào trong `decision_rule` đã ký? | **Cải tiến thêm**, nhánh “ba chỉ số an toàn đạt nhưng chưa đủ bằng chứng để tiếp tục hay thu hẹp. Giữ pilot ở môi trường thử.” Ở B7.4, bàn giữ `pilot_scope=all` để đo toàn bộ bộ nền. Khi đọc lại quy tắc đã ký ở B8, bàn xác định dòng Tiếp tục yêu cầu phạm vi hai depot đã đánh giá. Prepared đạt các ngưỡng tổng hợp trên bộ nền, còn phạm vi hai depot dự kiến cần được đo riêng. Gói sự cố chưa có ở v1 và sẽ được đánh giá riêng ở vòng 2 theo quy tắc đã ký. |
 | Nếu Thu hẹp: cắt phần nào, vì sao | Không áp dụng ở v1. |
-| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | Đề xuất ở vòng 2 chọn HN và HCM, chuyển ticket ngoài phạm vi và đơn không rõ kho cho CSKH. Giả thuyết là phạm vi này duy trì chất lượng và an toàn, đồng thời đạt trần chi phí, sàn ROI và SLA duyệt khi tính riêng trên phạm vi đó. Nguyễn Đức Khương Lam phụ trách đo lại và Trần Huy Bảo rà hàng chờ với chị Hạnh trước 26/11/2026. |
+| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | Đề xuất ở vòng 2 chọn HN và HCM, chuyển ticket ngoài phạm vi và đơn không rõ kho cho CSKH. Giả thuyết là phạm vi này duy trì chất lượng và an toàn, đồng thời đạt trần chi phí, sàn ROI và SLA duyệt khi tính riêng trên phạm vi đó. Nguyễn Đức Khương Lam phụ trách đo lại và Từ Huy Bảo rà hàng chờ với chị Hạnh trước 26/11/2026. |
 | Nếu Dừng: bài học ghi lại | Không áp dụng ở v1. |
 | Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | Hàng chờ và chất lượng tracking trong giờ cao điểm thật của từng depot: bộ nền chỉ có 22 ticket/ngày, chạy MockLLM, không có lỗi 429 (`llm_degraded_rate` = 0), nên chưa đo được tải dồn gấp ba hay quét bù tracking. |
 | Ngày quyết định lại (trừ khi Dừng) | 26/11/2026 theo Phiếu A. |
