@@ -20,13 +20,12 @@ rồi mới chạy đánh giá. Khối 1 không sửa code.
 
 ### Câu 1.1 · Một mục tiêu cấp hệ thống (khác "model trả lời đúng")
 
-> …
+> Trợ lý hoàn tiền tự động xử lý được phần lớn các đơn giao trễ có đủ bằng chứng, mà không hoàn sai tiền, không ghi lỗi oan cho hãng vận chuyển và không làm lộ dữ liệu khách. Các ca thiếu bằng chứng hoặc không chắc chắn được chuyển cho người duyệt thay vì tự quyết.
 
 ### Câu 1.2 · Mục tiêu nhìn từ hai người
 
-- Chị Oanh, kế toán đối soát (không dùng trợ lý, nhưng phải khớp sổ với hãng và shop mỗi tuần): …
-- Chị Hạnh, trưởng ca CSKH (phải duyệt những ca trợ lý chuyển sang): …
-
+- Chị Oanh, kế toán đối soát (không dùng trợ lý, nhưng phải khớp sổ với hãng và shop mỗi tuần): Mỗi khoản hoàn và mỗi lần ghi lỗi hãng của trợ lý đều đúng và có lý do, bằng chứng đi kèm, để chị Oanh khớp sổ với hãng và shop mỗi tuần mà không phải tự truy ngược từng ca. Không có khoản hoàn sai hay lỗi hãng oan cần điều chỉnh sau.
+- Chị Hạnh, trưởng ca CSKH (phải duyệt những ca trợ lý chuyển sang): Chỉ nhận các ca thật sự cần người quyết, vừa đủ số ca để duyệt kịp trong giờ mà không bị ùn hàng chờ. Mỗi ca chuyển sang có đủ thông tin (đơn, độ trễ, chính sách áp dụng, lý do chuyển) để chị quyết ngay, không phải tra lại từ đầu.
 ---
 
 <a id="a2"></a>
@@ -43,13 +42,12 @@ DỮ LIỆU nào, ở đâu, ai gán nhãn; TÍNH thế nào để hai người 
 
 ### Câu 1.3 · Offline metric cho MỘT bước · Câu 1.4 · Telemetry production
 
-Câu 1.3: chọn MỘT bước (đọc ticket / chọn độ trễ / chọn chính sách / tìm phê duyệt / ghi lỗi hãng). Câu 1.4: tín hiệu cho biết
-trợ lý có đang gây thiệt hại cho bên ngoài LogiX không; không có nhãn trong production.
+Câu 1.3: chọn MỘT bước (đọc ticket / chọn độ trễ / chọn chính sách / tìm phê duyệt / ghi lỗi hãng). Câu 1.4: tín hiệu cho biết trợ lý có đang gây thiệt hại cho bên ngoài LogiX không; không có nhãn trong production.
 
 | | Offline, cho MỘT bước (câu 1.3) | Telemetry production (câu 1.4) |
 |---|---|---|
-| **Bước / hành vi được đo** | | |
-| **Thước đo** (một câu, có đơn vị) | | |
+| **Bước / hành vi được đo** |  Chọn chính sách  |  Lệnh hoàn tiền tự động (`issue_refund`) của trợ lý mà không qua người duyệt|
+| **Thước đo** (một câu, có đơn vị) | Tỉ lệ (%) lần chạy mà `policy_id` agent chọn trùng với chính sách có hiệu lực đúng ngày giao của đơn | Tỉ lệ (%) khoản hoàn tự động bị người duyệt đảo lại, bị kế toán điều chỉnh hoặc bị hãng/shop khiếu nại trong vòng 7 ngày, trên tổng số khoản hoàn tự động cùng ngày |
 | **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | | |
 | **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | | |
 | **Khung thời gian / ngưỡng báo động** | (không áp dụng) | |
