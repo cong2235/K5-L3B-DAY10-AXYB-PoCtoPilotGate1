@@ -42,7 +42,7 @@ Kỹ sư cổng (cùng Lam), phần **đo, trace và chỉ số theo dõi** ở 
 
 ### Bằng chứng
 
-- Commit: `e08eb6c` (monitors + B0, B1, B2), `c49463a` (cập nhật B1 theo tiêu chí ký lại), `76d429d` (B6 + mục cá nhân), `34fc2f3` (chốt cổng vòng 1, mốc prepared, B0 dòng 3–4).
+- Commit: `e08eb6c` (monitors + B0, B1, B2), `c49463a` (cập nhật B1 theo tiêu chí ký lại), `76d429d` (B6 + mục cá nhân), `34fc2f3` (chốt cổng vòng 1, mốc prepared, B0 dòng 3–4), `62134db` (cập nhật mục cá nhân).
 - Lần chạy: `runs/R-base-before-20261119-161459-3971c5` (base · base), `runs/R-base-after-20261119-164605-997c3c` (base · after, cổng vòng 1), `runs/R-base-after-20261119-171411-cf1775` (base · after, cổng + config), `runs/R-base-prepared-20261119-171512-cf1775` (base · prepared).
 - Phiếu B: B0 dòng 1, 3, 4; B1; B2; hai dòng "(Đạt) ★" ở B6; B5 dòng 1. Phiếu C: `carrier_pii_rate` ở C2, C8, C11.
 - Còn mở: B5 dòng 4 (Quyền hạn) ghi "Chưa", chưa thử tắt thao tác ghi bằng `config/switches.json`.
