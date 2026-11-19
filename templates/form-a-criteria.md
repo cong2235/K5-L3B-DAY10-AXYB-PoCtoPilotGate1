@@ -48,7 +48,7 @@ Câu 1.3: chọn MỘT bước (đọc ticket / chọn độ trễ / chọn chí
 |---|---|---|
 | **Bước / hành vi được đo** |  Chọn chính sách  |  Lệnh hoàn tiền tự động (`issue_refund`) của trợ lý mà không qua người duyệt|
 | **Thước đo** (một câu, có đơn vị) | Tỉ lệ (%) lần chạy mà `policy_id` agent chọn trùng với chính sách có hiệu lực đúng ngày giao của đơn | Tỉ lệ (%) khoản hoàn tự động bị người duyệt đảo lại, bị kế toán điều chỉnh hoặc bị hãng/shop khiếu nại trong vòng 7 ngày, trên tổng số khoản hoàn tự động cùng ngày |
-| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | | |
+| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | Sự kiện policy trong runs/<mã>/traces/, bộ nền 22 ticket × 5 seed; nhãn "đúng" lấy từ data/world.json → policies theo ngày hiệu lực. Ai gán nhãn: dùng luôn dữ liệu có sẵn|  Log lệnh issue_refund, kết quả duyệt của người, khiếu nại từ hãng và shop; ghi rõ nguồn nào có độ trễ bao nhiêu ngày|
 | **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | | |
 | **Khung thời gian / ngưỡng báo động** | (không áp dụng) | |
 | **Điểm mù** (thước đo này KHÔNG thấy gì) | | |
