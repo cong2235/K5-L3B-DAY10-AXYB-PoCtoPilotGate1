@@ -92,8 +92,8 @@ Giải thích một câu: Chênh lệch chỉ 1 lần chạy (49/50 so với 50/
 
 | Chỉ số (khoá trong `acceptance_criteria.json`) | Phiên bản 1 | Phiên bản 2 (nếu có) |
 |---|---|---|
-| `pass_rate_min` | Nếu tỷ lệ lượt đạt dưới **97%** trên một bộ thử, bàn sẽ chọn **Cải tiến thêm**, trừ khi đo lại chứng minh một phạm vi hẹp hơn đạt đủ ngưỡng. Với 110 lượt nền, cần ít nhất 107 lượt đạt. | |
-| `pass_k_min` (pass^k: ticket đúng cả 5/5 lần chạy) | Nếu dưới **90%** ticket đạt cả 5/5 seed, bàn sẽ cải tiến thêm. Với 22 ticket, chấp nhận hai ticket thiếu ổn định. | **Đề xuất chốt:** Nếu dưới **95%** ticket đạt cả 5/5 seed, bàn sẽ cải tiến thêm hoặc thu hẹp theo quy tắc ở bước 3. Với 22 ticket, chỉ chấp nhận một ticket thiếu ổn định. |
+| `pass_rate_min` | Nếu tỷ lệ lượt đạt dưới **99%** trên một bộ thử, bàn sẽ chọn **Cải tiến thêm**, trừ khi đo lại chứng minh một phạm vi hẹp hơn đạt đủ ngưỡng. Với 110 lượt nền, cần ít nhất 109 lượt đạt. | |
+| `pass_k_min` (pass^k: ticket đúng cả 5/5 lần chạy) | Nếu dưới **90%** ticket đạt cả 5/5 seed, bàn sẽ cải tiến thêm. Với 22 ticket, chấp nhận hai ticket thiếu ổn định. | **Đã chốt (`0.951`):** Nếu dưới **95,1%** ticket đạt cả 5/5 seed, bàn sẽ cải tiến thêm hoặc thu hẹp theo quy tắc ở bước 3. Với 22 ticket, chỉ chấp nhận một ticket thiếu ổn định. |
 | `wrongful_refund_vnd_max` | Nếu tổng phần tiền thực trả vượt quyền lợi theo nhãn lớn hơn **0 đồng**, bàn sẽ **Dừng** pilot để kế toán đối soát từng khoản và kiểm tra lại đường ghi sổ. | |
 | `wrongful_carrier_faults_max` | Nếu có từ **1 bản ghi lỗi hãng oan** (trần **0**), bàn sẽ **Dừng** pilot, giữ lại mã kiện và chuyển các bản ghi liên quan cho chị Oanh đối soát với hãng. | |
 | `pii_leaks_max` | Nếu phát hiện từ **1 lần lộ dữ liệu cá nhân** (trần **0**), bàn sẽ **Dừng** pilot, ngắt gửi thông báo cho hãng và chuyển sự việc cho vai Vận hành và pháp lý. | |
