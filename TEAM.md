@@ -111,3 +111,30 @@ Kỹ sư cổng (cùng Đạt), phần **code cổng phòng ngừa và kiểm th
 
 - Học được: muốn thực sự ngăn lỗi trước các cách viết mới ở bộ kiểm tra ẩn thì cổng phải dựng lại dữ liệu từ nguồn sự thật DB (như 4 trường gửi hãng ở vòng 2, hay số ngày trễ trong tracking thay vì số khách khai); dò rồi che theo chuỗi chỉ giảm rủi ro và dễ lọt.
 - Còn chưa chắc: khi chạy pilot thật, nếu chính dữ liệu đầu nguồn (tracking DB hoặc trường `district` của đơn) bị nhập sai hay đồng bộ trễ thì cổng đọc từ DB vẫn có thể tin nhầm; cần đo thêm độ sạch dữ liệu nguồn và thử tải lỗi 429 thật trước Gate 2.
+
+## TuHuyBao-2A202604021
+
+### Phần việc phụ trách
+
+Vận hành và pháp lý: người viết Runbook phần 1–3 (Phiếu B mục B7.5) và mục Giờ cao điểm (B7.6); PIC dòng 7 (Vận hành) và dòng 8 (Con người, pháp lý) của checklist B5 và C11. Vòng 2 (thẻ S7, lộ dữ liệu người nhận quà cho hãng): phần pháp lý của sự cố, Runbook phần 4–5 (C11), risk register (C10), gom bài nộp (`submission/submission.json`, `lab10.check_submission --collect`). File: `templates/form-b-evaluation-gates.md`, `templates/form-c-incident.md`, `submission/submission.json`.
+
+### Đóng góp cụ thể
+
+- Viết Runbook 1–3 khớp `config/operating_gates.json` mục `operations` và `legal`: PIC NV-TUNG, người duyệt NV-HANH, 1 người trực, 6 ca/giờ, SLA 60 phút, ba điều kiện dừng, kênh Zalo nhóm vận hành LogiX-Refund; mục Giờ cao điểm (B7.6) ước tải gấp ba từ `ops_facts`.
+- Gộp nhánh khi kéo bài của bàn: giữ bản Phiếu B trên remote, chuyển nội dung bản nháp vào B3–B6 (`5090dcb`); soát và sửa B8 v1 trước khi chốt (`f9601ae`).
+- Nhận thẻ S7, đo mốc prepared trước khi sửa: cổng vòng 1 đã đưa lộ dữ liệu từ 30 về 0. Cùng sửa vòng 2: `notify_carrier` dựng lại tin gửi hãng từ DB theo spec 4 trường của hợp đồng, thêm monitor `carrier_notice_pii_attempt_rate` (`398e59f`).
+- Điền Phiếu C phần pháp lý và vận hành: hiệu chỉnh lòng tin người đặt hàng / người nhận (C3.3), spec và giả định môi trường (C5), risk register (C10), checklist và Runbook 4–5 (C11), quyết định v2 và ba dòng bắt buộc (C12).
+- Gom bài nộp: điền `submission/submission.json`, chạy `check_submission --collect` tới khi chỉ còn một mục THIẾU (tiêu chí bị ký lại sau commit ký đầu); không sửa lịch sử git để che, chuyển cho Lab Coach xem xét kèm `config/acceptance_criteria.notes.md`.
+
+### Bằng chứng
+
+- Commit: `5090dcb` (gộp Phiếu B), `f9601ae` (B8 v1), `9f98b90` (nhận thẻ S7), `398e59f` (cổng và monitor vòng 2), `6d706ed`, `dc4aa78` (Phiếu C), `2bf1284` (bài nộp), `b68d08b` (ghi chú tiêu chí cho Lab Coach).
+- Lần chạy: `R-S7-prepared-20261119-173229-cf1775` (S7 · prepared, trước khi sửa), `R-S7-after-20261119-173400-5c7fa5` (S7 · after), `R-base-after-20261119-173401-5c7fa5` (bộ nền sau khi sửa), grade `R-S7-grade-20261119-175107-5c7fa5` (PASS-VISIBLE).
+- Phiếu B: B7.5 (dòng "Người viết"), B7.6, B5 dòng 7–8. Phiếu C: C3.3, C5, C10, C11, C12.
+
+**Dùng AI:** dùng Claude (Claude Code) để gộp nhánh và soát Phiếu B, kéo thẻ S7, viết và thử cổng `notify_carrier` vòng 2 và monitor mới.
+
+### Exit ticket
+
+- Học được: một điều khoản trong hợp đồng chia sẻ dữ liệu (chỉ 4 trường) không bảo vệ được ai cho tới khi nó thành một kiểm tra trong code. Với người nhận quà, một bên thứ ba không dùng trợ lý và không có kênh nào để LogiX giải thích, đường duy nhất là làm cho hệ thống chỉ làm đúng điều họ tưởng: dựng lại tin gửi hãng từ DB theo spec thì NGĂN được, còn dò SĐT theo mẫu chỉ GIẢM và còn chặn nhầm mã vận đơn (`S7-05`).
+- Còn chưa chắc: phần người của checklist dòng 7–8 vẫn ghi "Chưa": người nhận chưa có kênh khiếu nại, `review_sampling_pct` = 0, chưa diễn tập tắt `notify_carrier`. Vì vậy chưa rõ nếu bài ẩn lộ dữ liệu qua kênh khác hoặc lộ dữ liệu người thứ ba không có trong DB thì ai sẽ thấy, và thấy sau bao lâu. Lab Coach cũng chưa trả lời có chấp nhận tiêu chí ký lại hay không.
