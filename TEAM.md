@@ -82,3 +82,32 @@ Trưởng nhóm, vai **Sản phẩm và kinh doanh**. Vòng 1: tiêu chí và k�
 
 - Học được: ngưỡng phải viết trước khi đo và giữ nguyên, nếu không dấu vết git và nhật ký lần chạy sẽ phản bội chính bàn; tôi đã phải ký lại một lần và mất thời gian giải thích. Ngoài ra một chỉ số tốt như pass_rate 0,99 có thể che một trial gây thiệt hại thật (hoàn sai, lỗi hãng oan), nên ba ngưỡng an toàn phải đặt riêng bằng 0.
 - Còn chưa chắc: ngưỡng chuyển người 0,25 và trần 1.000.000 đ/ngày được chọn từ dữ liệu giả, chưa biết có đúng khi ticket tăng gấp ba hoặc khi chính sách đổi sang REFUND-v4 (hạn mức tự động hạ còn 100.000 đ); và chưa đo riêng phạm vi hai depot nên chưa dám chọn Tiếp tục.
+
+## NguyenDucKhuongLam-2A202604020
+
+### Phần việc phụ trách
+
+Kỹ sư cổng (cùng Đạt), phần **code cổng phòng ngừa và kiểm thử hành vi**: cùng cả bàn thảo luận tiêu chí ở Khối 1 (CP1–CP2), viết 3 cổng phòng ngừa vòng 1 trong `lab10/guards.py` (chốt thành `lab10/guards_round1.py`), lý do kỹ thuật và pháp lý của pre-mortem câu 2.5 (B6), điền Phiếu B mục B0 dòng 2 và B7.1–B7.3 (câu 2.6–2.8); PIC dòng 3 (Bảo mật) và dòng 5 (Hiệu năng, hạ tầng) của checklist B5, PIC dòng 3 (Bảo mật) ở C11; kiểm chứng lại bản sửa vòng 2 trên thẻ S7. File: `lab10/guards.py`, `lab10/guards_round1.py`, `templates/form-b-evaluation-gates.md`.
+
+### Đóng góp cụ thể
+
+- Cài đặt môi trường, kiểm tra bộ test công khai (`unittest` 13/13 OK) và cùng cả bàn thảo luận tiêu chí, nguồn dữ liệu ở Khối 1 (trưởng nhóm tổng hợp vào Phiếu A và ký `config/acceptance_criteria.json`).
+- Viết hai lý do "(Lam) ★" cho pre-mortem (B6): lăng kính Kỹ thuật (đổi chính sách sang `REFUND-v4` ngày 01/12/2026 khi cờ `index_active` chưa chuyển) và lăng kính Pháp lý (đơn quà tặng `is_gift: true` và `customer_note` lộ dữ liệu người nhận sang hãng). Hai lý do này thành cổng 1 và cổng 3b ở B7.1.
+- Viết 3 cổng phòng ngừa vòng 1 trong `lab10/guards.py` (được chốt thành `lab10/guards_round1.py`, hash `ccbbeabb`), đối chiếu trực tiếp nguồn sự thật DB: `pre_guard` ghim chính sách hiệu lực theo `as_of`; `_gate_issue_refund` chặn hoàn trùng theo `ledger_rows`, không ghi khi `fail_open`, tính lại tiền hoàn từ tracking DB và giữ `payer = "LOGIX"`, kiểm phê duyệt và trần mỗi khách/ngày; `_gate_file_carrier_fault` và `_gate_notify_carrier` kiểm `carrier_at_fault` trên đúng kiện trễ và lọc tin gửi hãng về đúng 4 trường trong `carrier_notice_fields`.
+- Đo lại bộ nền sau khi dựng cổng vòng 1 (`R-base-after-20261119-164356-997c3c`): 110/110 trial đạt (`pass_rate` 1.0, `pass_k` 1.0, hoàn sai 0đ, lỗi hãng oan 0, lộ PII 0, 9/9 ngưỡng `[ĐẠT]`), không regression, `unittest` 13/13 OK; kiểm thêm các ca biên ngoài bộ mẫu (đổi ngày sang `REFUND-v4`, lỗi 429 retry/fail-open, phê duyệt sai ticket, đơn đa kiện, thiếu `delay_cause`).
+- Điền Phiếu B mục B0 dòng 2, B7.1 (bảng 3 cổng), B7.2 (hai bước tránh rò rỉ dữ liệu) và B7.3 (tính chất hành vi và 2 ticket hiểm chạy bằng `--adhoc` trên `O-1002`/`C-02` và `O-1026`/`C-10`).
+- Vòng 2 (thẻ S7): cổng vòng 1 (`guards_round1.py`) và dòng "(Lam) ★" ở B6 đã chặn được toàn bộ 30/30 lần lộ dữ liệu người nhận ngay ở mốc prepared (`pass_rate` 0.25 → 1.0, `pii_leaks` 30 → 0, ghi nhận ở C1); sau khi nhóm nâng cấp `_gate_notify_carrier` vòng 2 và thêm monitor, đã rà lại code và chạy kiểm chứng `lab10.grade --incident S7` (PASS-VISIBLE, cả 5 ô kiểm cục bộ đạt, không hỏng bộ nền) cùng `unittest` 13/13 OK.
+
+### Bằng chứng
+
+- Commit: `9c9c99f` (3 cổng vòng 1 trong `lab10/guards.py`, B0 dòng 2, B7.1–B7.3), `f4a84e7` (hai dòng "(Lam) ★" ở B6 và đồng bộ văn phong Phiếu B).
+- Lần chạy: `R-base-after-20261119-164356-997c3c` (base · after, cổng vòng 1), `R-S7-grade-20261119-174327-5c7fa5` (kiểm chứng thẻ S7 sau vòng 2); bản chốt `lab10/guards_round1.py` (`ccbbeabb`, mốc prepared trong `submission/runs/R-S7-prepared-20261119-205555-5c7fa5/report.json` đạt 1.0 và 0 lộ PII).
+- Phiếu B: B0 dòng 2; B5 dòng 3 (Bảo mật) và dòng 5 (Hiệu năng, hạ tầng); hai dòng "(Lam) ★" ở B6; B7.1, B7.2, B7.3; kế hoạch đo lại ở B8. Phiếu C: C1 (đối chiếu pre-mortem và mốc prepared), C11 dòng 3 (Bảo mật), kế hoạch đo lại ở C12.
+- Còn mở: B5 dòng 5 (Hiệu năng, hạ tầng) ghi "Chưa" vì bộ nền chạy MockLLM không có lỗi 429 (`llm_degraded_rate` = 0) và chưa đo tải giờ cao điểm thật; kế hoạch đo lại phạm vi hai depot HN và HCM theo B8/C12 trước 26/11/2026.
+
+**Dùng AI:** dùng Antigravity để đọc code agent, gợi ý cấu trúc cổng trong `lab10/guards.py`, chạy lệnh đo/kiểm thử và rà câu chữ cho B0, B6, B7.1–B7.3. Tôi đã đọc lại, đối chiếu từng nhánh kiểm tra với `data/world.json`, trace và output thật của `lab10.eval` / `lab10.grade`; không viết luật xử lý riêng theo mã ticket hay câu chữ mẫu.
+
+### Exit ticket
+
+- Học được: muốn thực sự ngăn lỗi trước các cách viết mới ở bộ kiểm tra ẩn thì cổng phải dựng lại dữ liệu từ nguồn sự thật DB (như 4 trường gửi hãng ở vòng 2, hay số ngày trễ trong tracking thay vì số khách khai); dò rồi che theo chuỗi chỉ giảm rủi ro và dễ lọt.
+- Còn chưa chắc: khi chạy pilot thật, nếu chính dữ liệu đầu nguồn (tracking DB hoặc trường `district` của đơn) bị nhập sai hay đồng bộ trễ thì cổng đọc từ DB vẫn có thể tin nhầm; cần đo thêm độ sạch dữ liệu nguồn và thử tải lỗi 429 thật trước Gate 2.
