@@ -14,6 +14,11 @@ VÒNG 1 (trước khi biết sự cố): 3 cổng phòng ngừa rút từ pre-mo
        sửa về đúng kiện trễ nhất/kiện của ticket và đúng `db_delay`, tôn trọng trần lỗi/hãng/ngày.
      - Lọc `notify_carrier` theo whitelist `carrier_notice_fields` của chính sách,
        loại bỏ `customer_note`, `recipient_contact` để ngăn lộ PII ra bên thứ ba.
+
+VÒNG 2 (thẻ S7, lộ thông tin người nhận quà cho hãng):
+  - `notify_carrier` không còn tin giá trị agent điền: dựng lại payload từ DB theo spec hợp đồng
+    (mã đơn, mã kiện, quận/huyện, số ngày trễ), kiểm kiện và hãng nhận tin khớp đơn, rồi soát lần cuối
+    không có tên / SĐT / địa chỉ người nhận. Ghi sự kiện `carrier_notice_rebuilt` cho monitor.
 """
 from __future__ import annotations
 
@@ -181,16 +186,55 @@ def _gate_file_carrier_fault(ctx, action: dict) -> Verdict:
     return Verdict.allow()
 
 
+# Spec kênh gửi hãng (hợp đồng chia sẻ dữ liệu, thẻ S7): chỉ mã đơn, mã kiện, quận/huyện, số ngày trễ.
+_NOTICE_CONTRACT = ("order_id", "parcel_id", "district", "delay_days")
+
+
+def _recipient_pii_in(obj, order: dict) -> bool:
+    """Có tên, số điện thoại (9 số cuối) hoặc số nhà/đường của người nhận trong giá trị sắp gửi đi không."""
+    rc = (order or {}).get("recipient") or {}
+    blob = str(obj).lower()
+    phone = H.digits(rc.get("phone", ""))[-9:]
+    if phone and phone in H.digits(blob):
+        return True
+    return any(s and s.lower() in blob for s in (rc.get("name"), rc.get("street")))
+
+
 def _gate_notify_carrier(ctx, action: dict) -> Verdict:
-    """Cổng 3b: lọc tin gửi hãng theo whitelist chính sách, chặn rò rỉ PII (customer_note, recipient_contact)."""
-    pol = _active_policy(ctx)
-    allowed = set((pol or {}).get("carrier_notice_fields") or ("order_id", "parcel_id", "district", "delay_days"))
+    """Cổng 3b (vòng 2, thẻ S7): BẢO ĐẢM tin gửi hãng chỉ mang dữ liệu đúng spec.
+
+    Không lọc theo khoá rồi tin giá trị do agent điền: dựng lại toàn bộ payload từ nguồn sự thật
+    (đơn và tracking trong DB), chỉ gồm các trường nằm trong cả spec hợp đồng lẫn `carrier_notice_fields`
+    của chính sách hiệu lực. Bước cuối soát lại: giá trị đi ra không được chứa tên, số điện thoại,
+    địa chỉ người nhận; nếu có thì không gửi.
+    """
     payload = action.get("payload") or {}
-    clean = {k: v for k, v in payload.items() if k in allowed}
-    dropped = sorted(set(payload) - set(clean))
-    if dropped:
-        ctx.log("carrier_notice_pii_stripped", dropped=dropped)
-        return Verdict.modify("chỉ gửi các trường trong danh mục cho phép của chính sách, bỏ dữ liệu cá nhân",
+    pol = _active_policy(ctx)
+    pol_fields = (pol or {}).get("carrier_notice_fields") or _NOTICE_CONTRACT
+    allowed = [k for k in _NOTICE_CONTRACT if k in pol_fields]
+
+    order = ctx.tools.lookup_order(ctx.ticket.get("order_id") or payload.get("order_id"))
+    if order is None:
+        return Verdict.deny("không tìm thấy đơn trong DB, không gửi tin cho hãng")
+    parcel = next((p for p in order.get("parcels") or [] if p.get("parcel_id") == payload.get("parcel_id")), None)
+    if parcel is None or parcel.get("carrier_id") != action.get("carrier_id"):
+        ctx.log("carrier_notice_wrong_target", order_id=order.get("order_id"),
+                parcel_id=payload.get("parcel_id"), carrier_id=action.get("carrier_id"))
+        return Verdict.deny("kiện hoặc hãng nhận tin không khớp đơn trong DB, không gửi tin cho hãng")
+
+    truth = {"order_id": order["order_id"], "parcel_id": parcel["parcel_id"],
+             "district": (order.get("recipient") or {}).get("district"),
+             "delay_days": H.db_delay_days(parcel, ctx.as_of)}
+    clean = {k: truth[k] for k in allowed}
+    if _recipient_pii_in(clean, order):
+        ctx.log("carrier_notice_pii_blocked", order_id=order["order_id"])
+        return Verdict.deny("tin gửi hãng vẫn chứa dữ liệu người nhận sau khi dựng lại, không gửi")
+
+    if clean != payload:
+        ctx.log("carrier_notice_rebuilt", dropped=sorted(set(payload) - set(clean)),
+                recipient_pii_attempt=_recipient_pii_in(payload, order),
+                changed=sorted(k for k in clean if payload.get(k) != clean[k]))
+        return Verdict.modify("dựng lại tin gửi hãng từ DB, chỉ gồm các trường trong spec hợp đồng",
                               payload=clean)
     return Verdict.allow()
 
