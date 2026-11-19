@@ -46,12 +46,12 @@ Câu 1.3: chọn MỘT bước (đọc ticket / chọn độ trễ / chọn chí
 
 | | Offline, cho MỘT bước (câu 1.3) | Telemetry production (câu 1.4) |
 |---|---|---|
-| **Bước / hành vi được đo** |  Chọn chính sách  |  Lệnh hoàn tiền tự động (`issue_refund`) của trợ lý mà không qua người duyệt|
-| **Thước đo** (một câu, có đơn vị) | Tỉ lệ (%) lần chạy mà `policy_id` agent chọn trùng với chính sách có hiệu lực đúng ngày giao của đơn | Tỉ lệ (%) khoản hoàn tự động bị người duyệt đảo lại, bị kế toán điều chỉnh hoặc bị hãng/shop khiếu nại trong vòng 7 ngày, trên tổng số khoản hoàn tự động cùng ngày |
-| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | | |
-| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | | |
-| **Khung thời gian / ngưỡng báo động** | (không áp dụng) | |
-| **Điểm mù** (thước đo này KHÔNG thấy gì) | | |
+| **Bước / hành vi được đo** |  Chọn chính sách  |  Ghi lỗi cho hãng khi hồ sơ của chính kiện hàng đó thiếu căn cứ.|
+| **Thước đo** (một câu, có đơn vị) | Tỉ lệ (%) lần chạy mà `policy_id` agent chọn trùng với chính sách có hiệu lực đúng ngày giao của đơn | Số bản ghi lỗi hãng thiếu căn cứ trên mỗi hãng trong 24 giờ. |
+| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | | Dùng toàn bộ dòng ghi lỗi đã ghi thành công. Ghép theo mã đơn và mã kiện với tracking tại thời điểm ghi, rồi đối chiếu mã hãng và `delay_cause` với `fault_causes` của chính sách hiệu lực. Nhân viên đối soát xác minh các cảnh báo. Phép đếm dùng trực tiếp dữ liệu vận hành.|
+| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | | Mỗi dòng ghi lỗi được đếm một lần nếu thiếu kiện, thiếu nguyên nhân, sai hãng hoặc nguyên nhân nằm ngoài danh sách được quy lỗi. Thiếu bản chính sách để đối chiếu cũng tính một lần. Cộng theo hãng bị ghi lỗi. Đây là số đếm tuyệt đối, không cần mẫu số.|
+| **Khung thời gian / ngưỡng báo động** | (không áp dụng) | Sau mỗi lần ghi, xét 24 giờ gần nhất. Từ một dòng nghi vấn, báo chị Oanh và trưởng ca kèm mã kiện để kiểm tra trước kỳ đối soát.|
+| **Điểm mù** (thước đo này KHÔNG thấy gì) | | Tracking có thể ghi sai nguyên nhân ngay từ đầu. Nếu các trường vẫn khớp nhau thì chỉ số có thể bỏ sót một lần quy lỗi oan.|
 
 **Ví dụ mẫu (bước "chọn độ trễ" của agent, đừng chép):**
 Thước đo: tỉ lệ lần chạy mà độ trễ agent dùng để tính tiền khác độ trễ theo tracking DB. Dữ liệu: sự kiện `proposal.delay_days_used`
