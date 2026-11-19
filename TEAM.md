@@ -54,20 +54,31 @@ Kỹ sư cổng (cùng Lam), phần **đo, trace và chỉ số theo dõi** ở 
 - Học được: một lỗi chìm như `T-002@55` chỉ chiếm 1/110 trial nhưng đủ làm trượt ngưỡng an toàn; pass_rate cao không nói lên thiệt hại cho bên thứ ba, phải đo riêng tiền hoàn sai và lỗi oan.
 - Còn chưa chắc: chỉ số chỉ đọc kết quả đã ghi (như `carrier_pii_rate`, `model_override_rate`) sẽ về 0 hoặc đứng yên khi cổng chặn đúng, nên không cho thấy áp lực đang đè lên cổng; cần thêm chỉ số đo "lần thử" như `carrier_notice_pii_attempt_rate` của vòng 2.
 
-## HoVaTen-MSSV
+## VoTranCong-2A202604026
 
 ### Phần việc phụ trách
 
-Vai trong bàn; câu nào của đề, mục nào của phiếu A/B/C, file nào (`lab10/guards.py`, `config/operating_gates.json`, …).
+Trưởng nhóm, vai **Sản phẩm và kinh doanh**. Vòng 1: tiêu chí và ký (câu 1.1–1.6, Phiếu A mục A1–A5, `config/acceptance_criteria.json`), bản đồ dữ liệu và ví dụ drift (câu 2.3, B3), lăng kính kinh doanh của pre-mortem (B6), cổng kinh doanh (câu 2.9, B7.4, mục `business` trong `config/operating_gates.json`), quyết định v1 (B8). Vòng 2: quyết định v2 và ba dòng bắt buộc (C12), gom `submission/`. File: `config/acceptance_criteria.json`, `config/operating_gates.json` (cả mục `operations`, `legal` điền cùng Bảo), `templates/form-a-criteria.md`, `templates/form-b-evaluation-gates.md`.
 
 ### Đóng góp cụ thể
 
-...
+- Điền Phiếu A: mục tiêu hệ thống (1.1), thước đo và telemetry (1.3, 1.4), đọc khoảng tin cậy (chọn đáp án (b) ở 1.5), sáu câu tiêu chí "Nếu … thì chúng tôi sẽ …", hai câu ranh giới đầu ra, bốn câu soát và ba ngưỡng `business_ops` (8.000 đ/ticket, ROI ≥ 0,25, 0 ca ùn). Các số lấy từ `data/world.json` (`ops_facts`, `ops_limits`), không chép từ file example.
+- Điền `config/acceptance_criteria.json`, chạy `lab10.criteria sign` và push trước lần `eval` đầu tiên (`1ef78f7`). Sau đó bàn đổi ngưỡng `pass_rate_min` và `pass_k_min` rồi ký lại (`cfa378f`); đã hỏi Lab Coach và ghi lý do vào commit `b68d08b`.
+- Chạy baseline sau khi ký (`R-base-before-20261119-164917-3971c5`), đối chiếu từng ngưỡng đã ký với kết quả `lab10.gate` và ghi bảng so sánh ở B1: hai chỉ số an toàn chưa đạt (hoàn sai 20.000 đ, lỗi hãng oan 1), cả hai từ một trial `T-002@55`.
+- Điền `config/operating_gates.json` (trần hoàn 1.000.000 đ/ngày, ngân sách LLM 1.500 đ/ticket, ROI ≥ 0,25, PIC NV-TUNG, người duyệt NV-HANH, 1 người trực, 6 ca/giờ, chờ tối đa 60 phút, chặn `customer_note`, `recipient_contact`), kiểm lại bộ nền sau khi điền (`R-base-after-20261119-170317-cf1775`: 110/110 đạt, không vượt trần), rồi điền B7.4 kèm lý do có số.
+- Soạn runbook 1–3 và mục giờ cao điểm (B7.5, B7.6) khớp các con số trong config, để Bảo rà lại.
+- Viết quyết định v1 ở B8 và quyết định v2 ở C12: **Cải tiến thêm** cho cả hai, dựa trên mã lần chạy và nhánh `decision_rule` đã ký; ghi rõ vì sao không chọn Tiếp tục dù ngưỡng đạt (chưa đo riêng phạm vi hai depot, còn nhánh hở ở fault tree).
 
 ### Bằng chứng
 
-Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
+- Commit: `b5f28b3`, `68d6fb2` (Phiếu A), `1ef78f7` (ký lần đầu), `cfa378f` (ký lại), `b68d08b` (ghi chú lý do ngưỡng, đề xuất cho Lab Coach), `ea97861` (điền `operating_gates.json`), `5090dcb` và `f9601ae` (B3–B6, quyết định v1), `2bf1284` (C12 v2, `submission/`).
+- Lần chạy: `R-base-before-20261119-164917-3971c5` (base), `R-base-after-20261119-170317-cf1775` (after, config đã điền), `R-S7-grade-20261119-173057-cf1775` (tự kiểm tra thẻ S7 trước khi sửa).
+- Phiếu: A (A1–A5), B1 (bảng so ngưỡng), B3, B7.4, B7.5–B7.6, B8 cột v1, C12 cột v2.
+- Còn mở: lịch sử git có hai commit ký tiêu chí (`1ef78f7`, `cfa378f`), nên hàm kiểm lịch sử của lab báo "đã bị commit thêm sau commit ký"; Lab Coach trả lời chỉ kiểm tra đã ký hay chưa nhưng bàn chưa có xác nhận bằng văn bản.
+
+**Dùng AI:** dùng Claude (Claude Code) để đọc code và `data/world.json`, đề xuất ngưỡng và cách viết cho Phiếu A, nháp B7.4, runbook 1–3 và giờ cao điểm, chạy lệnh đo và đối chiếu kết quả, xử lý conflict khi merge. Tôi đã đọc lại, đối chiếu với output thật của `lab10.eval` / `lab10.gate` và chốt các con số; không dùng AI để viết code xử lý riêng theo mã ticket.
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+- Học được: ngưỡng phải viết trước khi đo và giữ nguyên, nếu không dấu vết git và nhật ký lần chạy sẽ phản bội chính bàn; tôi đã phải ký lại một lần và mất thời gian giải thích. Ngoài ra một chỉ số tốt như pass_rate 0,99 có thể che một trial gây thiệt hại thật (hoàn sai, lỗi hãng oan), nên ba ngưỡng an toàn phải đặt riêng bằng 0.
+- Còn chưa chắc: ngưỡng chuyển người 0,25 và trần 1.000.000 đ/ngày được chọn từ dữ liệu giả, chưa biết có đúng khi ticket tăng gấp ba hoặc khi chính sách đổi sang REFUND-v4 (hạn mức tự động hạ còn 100.000 đ); và chưa đo riêng phạm vi hai depot nên chưa dám chọn Tiếp tục.
