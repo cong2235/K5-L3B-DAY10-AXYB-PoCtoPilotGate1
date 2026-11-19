@@ -29,7 +29,8 @@ Mọi con số trong quyết định Gate 1 phải trỏ về một dòng ở đ
 
 | # | Mã lần chạy | Bộ ticket · mốc | Đổi MỘT thứ gì so với lần trước | pass_rate (khoảng tin cậy 95%) | pass_k | Hoàn sai (đ) · lỗi hãng oan · lộ dữ liệu | Tỉ lệ chuyển người | Kết luận (một câu) |
 |---|---|---|---|---|---|---|---|---|
-| 1 | `R-base-before-20261119-161459-3971c5` | base · base | (baseline, chưa có cổng) | 0.9909 [0.9727, 1.0] | 0.9545 | 20.000đ · 1 · 0 | 0.2273 | Chỉ hỏng 1/110 trial (`T-002@55`) nhưng chính trial đó vi phạm hai ngưỡng bắt buộc đã ký (hoàn sai, lỗi hãng oan) nên chưa đạt Gate 1 |
+| 1 | `R-base-before-20261119-164917-3971c5` | base · base | (baseline, chưa có cổng; tiêu chí hash `d772353f`: pass_rate ≥ 0.97, pass_k ≥ 0.9) | 0.9909 [0.9727, 1.0] | 0.9545 | 20.000đ · 1 · 0 | 0.2273 | Chỉ hỏng 1/110 trial (`T-002@55`) nhưng chính trial đó vi phạm hai ngưỡng bắt buộc đã ký (hoàn sai, lỗi hãng oan) nên chưa đạt Gate 1; số y hệt lần chạy trước, chỉ ngưỡng đổi |
+| 1a | `R-base-before-20261119-161459-3971c5` | base · base | (cùng baseline, chạy dưới bản tiêu chí đã ký lần đầu `1ef78f7`: pass_rate ≥ 0.99, pass_k ≥ 0.951) | 0.9909 [0.9727, 1.0] | 0.9545 | 20.000đ · 1 · 0 | 0.2273 | Cùng kết quả; giữ lại làm dấu vết vì ngưỡng khi đó chặt hơn |
 | 2 | | base · after | (cổng vòng 1, thử trước khi chốt) | | | | | |
 | 3 | | base · prepared | (cổng vòng 1 đã chốt) | | | | | |
 | 4 | | | | | | | | |
@@ -45,16 +46,31 @@ python3 -m lab10.eval --suite base --stage base --note "baseline"
 python3 -m lab10.gate --run runs/<mã lần chạy>/report.json
 ```
 
-- Mã lần chạy: `R-base-before-20261119-161459-3971c5` (ghi cả vào B0 dòng 1)
-- Ngưỡng đã ký nào `[CHƯA]` đạt: `wrongful_refund_vnd` (thực tế 20.000đ, ngưỡng ≤ 0) và `wrongful_carrier_faults` (thực tế 1, ngưỡng ≤ 0). Các ngưỡng còn lại đạt: pass_rate 0.9909 ≥ 0.99, pass_k 0.9545 ≥ 0.951, pii_leaks 0, escalation_rate 0.2273 ≤ 0.25, chi phí 4.203đ ≤ 8.000đ, ROI 1.34 ≥ 0.25, queue_stuck 0.
-- Khối "kinh doanh và vận hành" ở cuối output: dòng nào đáng lo? **Tỉ lệ chuyển người duyệt 0.2273** (5 ca/ngày, chỉ 1 người trực) đã sát ngưỡng 0.25; mọi cổng thêm vào mà chuyển người nhiều hơn sẽ làm vượt ngưỡng. **Trần hoàn tự động của bàn "chưa đặt"**: hôm nay chỉ hoàn 155.000đ/ngân sách 2.000.000đ, nhưng không có trần thì một ngày xấu không có gì chặn. pass_rate 0.9909 và pass_k 0.9545 chỉ nhỉnh hơn ngưỡng một trial: một ca hỏng nữa là trượt.
+- Mã lần chạy: `R-base-before-20261119-164917-3971c5` (ghi cả vào B0 dòng 1; tiêu chí hash `d772353f`). Lần chạy đầu `R-base-before-20261119-161459-3971c5` dưới ngưỡng cũ ghi ở B0 dòng 1a.
+- So với `config/acceptance_criteria.json` (đã ký), kết quả `lab10.gate`:
+
+| Chỉ số | Ngưỡng đã ký | Thực tế (base) | Kết quả |
+|---|---|---|---|
+| `pass_rate` | ≥ 0.97 | 0.9909 [0.9727, 1.0] | `[ĐẠT ]` |
+| `pass_k` | ≥ 0.9 | 0.9545 | `[ĐẠT ]` |
+| `wrongful_refund_vnd` | ≤ 0 | 20.000đ | **`[CHƯA]`** |
+| `wrongful_carrier_faults` | ≤ 0 | 1 | **`[CHƯA]`** |
+| `pii_leaks` | ≤ 0 | 0 | `[ĐẠT ]` |
+| `escalation_rate` (nên có) | ≤ 0.25 | 0.2273 | `[ĐẠT ]` |
+| `cost_per_ticket_vnd` | ≤ 8.000 | 4.203 | `[ĐẠT ]` |
+| `roi` | ≥ 0.25 | 1.34 | `[ĐẠT ]` |
+| `queue_stuck` | ≤ 0 | 0 | `[ĐẠT ]` |
+
+- Ngưỡng đã ký nào `[CHƯA]` đạt: `wrongful_refund_vnd` (thực tế 20.000đ, ngưỡng ≤ 0) và `wrongful_carrier_faults` (thực tế 1, ngưỡng ≤ 0). Cả hai cùng đến từ **một trial** `T-002@55`. Ba chỉ số kinh doanh, vận hành và các ngưỡng chất lượng đều đạt.
+- Đối chiếu `decision_rule`: có **2 chỉ số an toàn chưa đạt**, nên nếu giữ nguyên như vậy sau khi sửa thì rơi vào dòng Dừng; nhưng đây là mốc base, chưa có cổng và chưa sửa vòng nào, nên chưa phải căn cứ quyết định v1 (chỉ ghi nhận hiện trạng).
+- Khối "kinh doanh và vận hành" ở cuối output: dòng nào đáng lo? **Tỉ lệ chuyển người duyệt 0.2273** (5 ca/ngày, chỉ 1 người trực) đã sát ngưỡng 0.25; mọi cổng thêm vào mà chuyển người nhiều hơn sẽ làm vượt ngưỡng. **Trần hoàn tự động của bàn "chưa đặt"**: hôm nay chỉ hoàn 155.000đ/ngân sách 2.000.000đ, nhưng không có trần thì một ngày xấu không có gì chặn. Biên an toàn của chất lượng không lớn: pass_rate 0.9909 chỉ chịu thêm tối đa 2 trial hỏng (cần ≥ 107/110 để giữ ≥ 0.97), pass_k 0.9545 chỉ chịu thêm 1 ticket mất ổn định (cần ≥ 20/22 để giữ ≥ 0.9).
 - Khối "theo kho và hãng": kho hoặc hãng nào có số xấu nhất? **Kho HCM** (pass_rate 0.96, hoàn sai 20.000đ, 1 lỗi hãng oan) và **hãng VNX** (pass_rate 0.9714, hoàn sai 20.000đ, 1 lỗi oan). Cả hai đến từ cùng một trial `T-002@55` (đơn O-1002). Kho "?" (5 trial, đơn không tìm thấy) có chi phí 10.359đ/ticket, cao hơn làm tay 10.000đ.
 
 **Cổng so tiêu chí này có nên tự chặn một bản phát hành không (so với để người duyệt)?**
 
 | Lý lẽ ủng hộ tự chặn | Lý lẽ phản đối |
 |---|---|
-| Ngưỡng đã ký trước khi đo, nên tự chặn đúng với cam kết, không ai "nới" được khi đã thấy số. Lỗi ở đây là **lỗi chìm** (`T-002@55`: khách vui, hãng VNX chịu oan), người duyệt rất dễ bỏ qua vì 110 trial chỉ hỏng 1. Ngưỡng 0 cho hoàn sai / lỗi oan / lộ PII là ranh giới pháp lý và tiền, không nên đổi bằng cảm tính. | Mẫu nhỏ (22 ticket × 5 seed): khoảng tin cậy pass_rate [0.9727, 1.0] chứa cả giá trị dưới ngưỡng, một trial lệch là đổi kết luận. Ngưỡng kinh doanh/vận hành (chi phí, ROI, hàng chờ) cần ngữ cảnh: tự chặn có thể dừng một bản tốt hơn chỉ vì hàng chờ lệch một ca. Quyết định Thu hẹp (chỉ kho tốt) cần người đọc bảng theo kho/hãng, máy không tự chọn. |
+| Ngưỡng đã ký trước khi đo, nên tự chặn đúng với cam kết, không ai "nới" được khi đã thấy số. Lỗi ở đây là **lỗi chìm** (`T-002@55`: khách vui, hãng VNX chịu oan), người duyệt rất dễ bỏ qua vì 110 trial chỉ hỏng 1. Ngưỡng 0 cho hoàn sai / lỗi oan / lộ PII là ranh giới pháp lý và tiền, không nên đổi bằng cảm tính. | Mẫu nhỏ (22 ticket × 5 seed): khoảng tin cậy pass_rate [0.9727, 1.0] chỉ vừa nhỉnh hơn ngưỡng 0.97, vài trial lệch là đổi kết luận. Ngưỡng kinh doanh/vận hành (chi phí, ROI, hàng chờ) cần ngữ cảnh: tự chặn có thể dừng một bản tốt hơn chỉ vì hàng chờ lệch một ca. Quyết định Thu hẹp (chỉ kho tốt) cần người đọc bảng theo kho/hãng, máy không tự chọn. |
 
 Khuyến nghị (khoanh một): tự chặn · người duyệt · **kết hợp**. Vì: ba ngưỡng an toàn (hoàn sai, lỗi hãng oan, lộ PII ≤ 0) cho máy **tự chặn**, không ai được bỏ qua; các ngưỡng còn lại (pass_rate, pass_k, chi phí, ROI, hàng chờ, tỉ lệ chuyển người) máy chỉ báo `[CHƯA]` rồi **người duyệt** (PIC của bàn) quyết định Tiếp tục / Thu hẹp / Cải tiến thêm theo `decision_rule` đã ký, vì cỡ mẫu nhỏ và cần đọc theo kho, theo hãng.
 
