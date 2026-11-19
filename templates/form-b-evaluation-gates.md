@@ -34,6 +34,7 @@ Mọi con số trong quyết định Gate 1 phải trỏ về một dòng ở đ
 | 2 | `R-base-after-20261119-164356-997c3c` | base · after | Thêm 3 cổng phòng ngừa vòng 1 trong `lab10/guards.py` (ghim chính sách theo `as_of`, kiểm `issue_refund` theo DB + chống hoàn trùng + duyệt, kiểm `file_carrier_fault` và bỏ PII ở `notify_carrier`) | 1.0 [1.0, 1.0] | 1.0 | 0đ · 0 · 0 | 0.2273 | Hết lỗi `T-002@55` (110/110 trial đạt, không làm hỏng ca đang đúng, `unittest` 13/13 OK); chi phí 4.202đ/ticket, ROI 1.38, mọi ngưỡng đã ký trên bộ nền đều `[ĐẠT]` |
 | 3 | `R-base-prepared-20261119-171512-cf1775` | base · prepared | (cổng vòng 1 đã chốt, hash `ccbbeabb`: `guards_round1.py` + `operating_gates.round1.json`) | 1.0 [1.0, 1.0] | 1.0 | 0đ · 0 · 0 | 0.2273 | Bản chốt cho kết quả giống hệt dòng 4: mọi ngưỡng đã ký `[ĐẠT]`, "vượt trần: không", chi phí 4.202đ/ticket, ROI 1.38 |
 | 4 | `R-base-after-20261119-171411-cf1775` | base · after | Điền `config/operating_gates.json` (trần hoàn 1.000.000đ/ngày, ngân sách 1.500đ/ticket, ROI ≥ 0.25, PIC NV-TUNG, người duyệt NV-HANH, chặn `customer_note` + `recipient_contact` gửi hãng, ghi lỗi hãng phải có nguyên nhân) | 1.0 [1.0, 1.0] | 1.0 | 0đ · 0 · 0 | 0.2273 | Config mới không làm hỏng ca nào (110/110), không vượt trần nào; hoàn tự động 155.000đ/ngày, xa trần 1.000.000đ |
+| 5 | `R-base-prepared-20261119-172242-bf3aef` | base · prepared | (không đổi gì; đo lại mốc prepared trên máy khác để đọc khối "theo kho và hãng" cho B8) | 1.0 [1.0, 1.0] | 1.0 | 0đ · 0 · 0 | 0.2273 | Cho cùng kết quả với dòng 3: tái lập được; kho `?` là phân khúc duy nhất có chi phí cao hơn làm tay (10.359đ/ticket) |
 
 ---
 
@@ -411,22 +412,24 @@ bao nhiêu thời gian? (3) Có phần nào của dự án không nên làm ti�
 
 | | **v1** (phút 105–115, TRƯỚC khi nhận thẻ sự cố) |
 |---|---|
-| Commit ký tiêu chí (message `Sign acceptance criteria`; hash commit, tuỳ chọn) | |
-| Hash chốt cổng vòng 1 (8 ký tự lệnh `lab10.checkpoint` in ra, tuỳ chọn) | |
-| Mã lần chạy dùng làm bằng chứng | bộ nền, mốc base: ________ · bộ nền với cổng vòng 1 (prepared): ________ |
-| Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | |
-| Kho hoặc hãng có số xấu nhất: ____. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Đọc khối "theo kho và hãng" ở cuối output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | |
-| Quyết định (khoanh một) | Tiếp tục · Thu hẹp · Cải tiến thêm · Dừng |
-| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | |
-| Bằng chứng 2 | |
-| Bằng chứng 3 | |
-| Khớp dòng nào trong `decision_rule` đã ký? | |
-| Nếu Thu hẹp: cắt phần nào, vì sao | |
-| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | |
-| Nếu Dừng: bài học ghi lại | |
-| Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | |
-| Ngày quyết định lại (trừ khi Dừng) | |
-| PIC ký | |
+| Commit ký tiêu chí (message `Sign acceptance criteria`; hash commit, tuỳ chọn) | `cfa378f` (bản ký lại, hash tiêu chí `d772353f`); lần ký đầu `1ef78f7` |
+| Hash chốt cổng vòng 1 (8 ký tự lệnh `lab10.checkpoint` in ra, tuỳ chọn) | `ccbbeabb` |
+| Mã lần chạy dùng làm bằng chứng | bộ nền, mốc base: `R-base-before-20261119-164917-3971c5` · bộ nền với cổng vòng 1 (prepared): `R-base-prepared-20261119-171512-cf1775` |
+| Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | Không. Report prepared in "vượt trần: không": chờ lâu nhất 0 phút, 0 ca ùn; chi phí 4.202 đ/ticket (trần 8.000 đ); ROI 1,38 (tối thiểu 0,25); hoàn tự động 155.000 đ/ngày (trần bàn đặt 1.000.000 đ); hoàn sai 0 đ, lỗi hãng oan 0, lộ PII 0. |
+| Kho hoặc hãng có số xấu nhất. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? | Nhóm kho `?` (5 lượt, đơn không tìm thấy) đạt 5/5 và không có vi phạm an toàn, nhưng tốn 10.359 đ/ticket so với 10.000 đ/ticket khi làm tay. Nhóm này củng cố quyết định Cải tiến thêm. Đề xuất chuyển đơn không xác định được kho cho CSKH xử lý thủ công. |
+| Quyết định (khoanh một) | **Cải tiến thêm**. Giữ pilot ở môi trường thử trong khi xác nhận phạm vi triển khai và đo lại. |
+| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | `R-base-prepared-20261119-171512-cf1775`: cả năm ngưỡng bắt buộc đạt: pass_rate 1.0 [1.0; 1.0] ≥ 0,97 · pass_k 1.0 ≥ 0,9 · hoàn sai 0 đ ≤ 0 · lỗi hãng oan 0 ≤ 0 · lộ PII 0 ≤ 0. |
+| Bằng chứng 2 | So với base `R-base-before-20261119-164917-3971c5`: hết lỗi `T-002@55` (hoàn sai 20.000 đ → 0, lỗi hãng oan 1 → 0); 110/110 trial đạt, không ca đang đúng nào hỏng; `unittest` 13/13 OK; `escalation_rate` 0,2273 ≤ 0,25 (nên có). |
+| Bằng chứng 3 | Ba ngưỡng kinh doanh, vận hành đạt ở prepared: chi phí 4.202 đ/ticket ≤ 8.000 đ · ROI 1,38 ≥ 0,25 · 0 ca ùn ≤ 0; độ phủ pilot 1.0 (22/22 ticket). Đo lại trên máy khác cho cùng số: `R-base-prepared-20261119-172242-bf3aef`. |
+| Khớp dòng nào trong `decision_rule` đã ký? | **Cải tiến thêm**, nhánh “ba chỉ số an toàn đạt nhưng chưa đủ bằng chứng để tiếp tục hay thu hẹp. Giữ pilot ở môi trường thử.” Ở B7.4, bàn giữ `pilot_scope=all` để đo toàn bộ bộ nền. Khi đọc lại quy tắc đã ký ở B8, bàn xác định dòng Tiếp tục yêu cầu phạm vi hai depot đã đánh giá. Prepared đạt các ngưỡng tổng hợp trên bộ nền, còn phạm vi hai depot dự kiến cần được đo riêng. Gói sự cố chưa có ở v1 và sẽ được đánh giá riêng ở vòng 2 theo quy tắc đã ký. |
+| Nếu Thu hẹp: cắt phần nào, vì sao | Không áp dụng ở v1. |
+| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | Đề xuất ở vòng 2 chọn HN và HCM, chuyển ticket ngoài phạm vi và đơn không rõ kho cho CSKH. Giả thuyết là phạm vi này duy trì chất lượng và an toàn, đồng thời đạt trần chi phí, sàn ROI và SLA duyệt khi tính riêng trên phạm vi đó. Nguyễn Đức Khương Lam phụ trách đo lại và Trần Huy Bảo rà hàng chờ với chị Hạnh trước 26/11/2026. |
+| Nếu Dừng: bài học ghi lại | Không áp dụng ở v1. |
+| Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | Hàng chờ và chất lượng tracking trong giờ cao điểm thật của từng depot: bộ nền chỉ có 22 ticket/ngày, chạy MockLLM, không có lỗi 429 (`llm_degraded_rate` = 0), nên chưa đo được tải dồn gấp ba hay quét bù tracking. |
+| Ngày quyết định lại (trừ khi Dừng) | 26/11/2026 theo Phiếu A. |
+| PIC ký | Lê Thanh Tùng (`NV-TUNG`), ký trong vai PIC mô phỏng ngày 19/11/2026. |
+
+**Ghi chú cho Lab Coach.** Prepared `R-base-prepared-20261119-171512-cf1775` đạt `pass_rate=1,0` và `pass_k=1,0`, cao hơn cả hai ngưỡng chất lượng ban đầu 0,99 và 0,951. Nhận định chất lượng ở v1 giữ nguyên khi đối chiếu với các ngưỡng ban đầu. Việc ký lại vẫn cần Lab Coach xem xét theo quy định của lab.
 
 Xong v1 thì lưu và đẩy một bản (sau mốc này không sửa cột v1):
 
