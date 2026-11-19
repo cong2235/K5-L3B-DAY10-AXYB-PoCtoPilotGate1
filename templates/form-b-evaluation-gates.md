@@ -32,8 +32,8 @@ Mọi con số trong quyết định Gate 1 phải trỏ về một dòng ở đ
 | 1 | `R-base-before-20261119-164917-3971c5` | base · base | (baseline, chưa có cổng; tiêu chí hash `d772353f`: pass_rate ≥ 0.97, pass_k ≥ 0.9) | 0.9909 [0.9727, 1.0] | 0.9545 | 20.000đ · 1 · 0 | 0.2273 | Chỉ hỏng 1/110 trial (`T-002@55`) nhưng chính trial đó vi phạm hai ngưỡng bắt buộc đã ký (hoàn sai, lỗi hãng oan) nên chưa đạt Gate 1; số y hệt lần chạy trước, chỉ ngưỡng đổi |
 | 1a | `R-base-before-20261119-161459-3971c5` | base · base | (cùng baseline, chạy dưới bản tiêu chí đã ký lần đầu `1ef78f7`: pass_rate ≥ 0.99, pass_k ≥ 0.951) | 0.9909 [0.9727, 1.0] | 0.9545 | 20.000đ · 1 · 0 | 0.2273 | Cùng kết quả; giữ lại làm dấu vết vì ngưỡng khi đó chặt hơn |
 | 2 | `R-base-after-20261119-164356-997c3c` | base · after | Thêm 3 cổng phòng ngừa vòng 1 trong `lab10/guards.py` (ghim chính sách theo `as_of`, kiểm `issue_refund` theo DB + chống hoàn trùng + duyệt, kiểm `file_carrier_fault` và bỏ PII ở `notify_carrier`) | 1.0 [1.0, 1.0] | 1.0 | 0đ · 0 · 0 | 0.2273 | Hết lỗi `T-002@55` (110/110 trial đạt, không làm hỏng ca đang đúng, `unittest` 13/13 OK); chi phí 4.202đ/ticket, ROI 1.38, mọi ngưỡng đã ký trên bộ nền đều `[ĐẠT]` |
-| 3 | | base · prepared | (cổng vòng 1 đã chốt) | | | | | |
-| 4 | | | | | | | | |
+| 3 | `R-base-prepared-20261119-171512-cf1775` | base · prepared | (cổng vòng 1 đã chốt, hash `ccbbeabb`: `guards_round1.py` + `operating_gates.round1.json`) | 1.0 [1.0, 1.0] | 1.0 | 0đ · 0 · 0 | 0.2273 | Bản chốt cho kết quả giống hệt dòng 4: mọi ngưỡng đã ký `[ĐẠT]`, "vượt trần: không", chi phí 4.202đ/ticket, ROI 1.38 |
+| 4 | `R-base-after-20261119-171411-cf1775` | base · after | Điền `config/operating_gates.json` (trần hoàn 1.000.000đ/ngày, ngân sách 1.500đ/ticket, ROI ≥ 0.25, PIC NV-TUNG, người duyệt NV-HANH, chặn `customer_note` + `recipient_contact` gửi hãng, ghi lỗi hãng phải có nguyên nhân) | 1.0 [1.0, 1.0] | 1.0 | 0đ · 0 · 0 | 0.2273 | Config mới không làm hỏng ca nào (110/110), không vượt trần nào; hoàn tự động 155.000đ/ngày, xa trần 1.000.000đ |
 
 ---
 
