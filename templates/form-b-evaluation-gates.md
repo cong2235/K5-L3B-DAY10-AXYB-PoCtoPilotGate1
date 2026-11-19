@@ -251,7 +251,8 @@ Bốn lăng kính (bắt buộc đủ cả bốn; dự án AI hay chết ở ba 
 
 | Lý do thất bại (viết ở thì quá khứ) | Lăng kính | Kiểm được hôm nay? (trace / data / config nào) | Thành cổng phòng ngừa nào (code hay config) / hay vào risk register |
 |---|---|---|---|
-| | Kỹ thuật | | |
+| **(Đạt) ★** Khách phát hiện chỉ cần viết "trễ N ngày, tôi chắc chắn / có ảnh chụp" là được hoàn; trợ lý tin số khách khai hơn tracking, hoàn sai hàng loạt và ghi lỗi oan cho hãng, hãng VNX khiếu nại đòi gỡ lỗi. | Kỹ thuật | **Có.** Trace `T-002@55`: `model_override {"db": 2, "ticket": 5}` → hoàn 20.000đ + `file_carrier_fault VNX delay_days 5` (run `R-base-before-20261119-161459-3971c5`); monitor `model_override_rate` = 0.045 trên bộ nền. | **Cổng code:** `write_gate` nhánh `issue_refund` tính lại số tiền từ tracking DB + chính sách hiệu lực; nhánh `file_carrier_fault` chỉ ghi khi `carrier_at_fault` theo DB (B7.1 cổng 2, 3). Theo dõi bằng `model_override_rate`. |
+| **(Đạt) ★** Giờ cao điểm model bị lỗi 429 liên tục; trợ lý "chiều khách" hoàn phí ship và ghi lỗi hãng mà không kiểm chính sách (fail-open), lại ghi sổ hoàn lần hai khi không chắc lần đầu đã ghi; đối soát cuối tháng lệch sổ. | Kỹ thuật | **Một phần.** Code `lab10/agent.py` có nhánh `basis = "fail_open"` và `write_retry`; bộ nền không có lỗi 429 (`llm_degraded_rate` = 0, `duplicate_refund_rate` = 0) nên chưa thấy trong số đo. | **Cổng code:** `write_gate` nhánh `issue_refund` chặn khi `basis == "fail_open"` và chặn hoàn trùng theo `ledger_rows(order_id)` (B7.1 cổng 2). Theo dõi `llm_degraded_rate`, `fail_open_refund_rate`, `duplicate_refund_rate`; số lần 429 / ngày vào risk register. |
 | | Kinh doanh | | |
 | | Con người và vận hành | | |
 | | Pháp lý | | |
