@@ -1,12 +1,17 @@
 {
   "team": "K5-L3B-DAY10-AXYB-PoCtoPilotGate1",
-  "members": ["VoTranCong-2A202604026"],
-  "incident": "",
-  "decision_v1": "",
-  "decision_v2": "",
+  "members": [
+    "VoTranCong-2A202604026",
+    "TranHuyBao-2A202604021",
+    "HaVanKhanhDat-2A202604074",
+    "NguyenDucKhuongLam-2A202604020"
+  ],
+  "incident": "S7",
+  "decision_v1": "Cải tiến thêm",
+  "decision_v2": "Cải tiến thêm",
   "three_lines": {
-    "environment_assumption": "",
-    "reduce_or_prevent": "",
-    "measure_in_pilot": ""
+    "environment_assumption": "Chúng tôi giả định hãng vận chuyển chỉ cần mã đơn, mã kiện, quận/huyện và số ngày trễ để nhận lỗi, và dữ liệu người nhận trong DB là nơi duy nhất chứa thông tin người nhận; ngoài thực tế hãng có thể đòi thêm thông tin để xử lý, và khách có thể nhắc tới người thứ ba không có trong DB.",
+    "reduce_or_prevent": "Trên kênh notify_carrier, gate NGĂN được vì tin gửi hãng được dựng lại hoàn toàn từ DB với đúng bốn trường của hợp đồng, nên chữ khách gõ và thông tin người nhận không thể đi ra; bước soát tên, SĐT, địa chỉ cuối cùng chỉ GIẢM thêm, và các kênh gửi bên thứ ba khác chưa đi qua gate này.",
+    "measure_in_pilot": "Đo lại tỉ lệ tin gửi hãng mà agent định chèn dữ liệu người nhận (carrier_notice_pii_attempt_rate) trên ticket thật, số khiếu nại của người nhận qua một kênh riêng, và cùng các ngưỡng đã ký trên riêng phạm vi hai depot HN và HCM."
   }
 }
