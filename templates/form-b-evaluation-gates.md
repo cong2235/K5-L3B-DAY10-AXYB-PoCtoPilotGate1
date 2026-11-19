@@ -46,8 +46,8 @@ python3 -m lab10.gate --run runs/<mã lần chạy>/report.json
 ```
 
 - Mã lần chạy: `R-base-before-20261119-161459-3971c5` (ghi cả vào B0 dòng 1)
-- Ngưỡng đã ký nào `[CHƯA]` đạt: `wrongful_refund_vnd` (thực tế 20.000đ, ngưỡng ≤ 0) và `wrongful_carrier_faults` (thực tế 1, ngưỡng ≤ 0). Các ngưỡng còn lại đạt: pass_rate 0.9909 ≥ 0.99, pass_k 0.9545 ≥ 0.951, pii_leaks 0, escalation_rate 0.2273 ≤ 0.25, chi phí 4.203đ ≤ 8.000đ, ROI 1.34 ≥ 0.25, queue_stuck 0.
-- Khối "kinh doanh và vận hành" ở cuối output: dòng nào đáng lo? **Tỉ lệ chuyển người duyệt 0.2273** (5 ca/ngày, chỉ 1 người trực) đã sát ngưỡng 0.25; mọi cổng thêm vào mà chuyển người nhiều hơn sẽ làm vượt ngưỡng. **Trần hoàn tự động của bàn "chưa đặt"**: hôm nay chỉ hoàn 155.000đ/ngân sách 2.000.000đ, nhưng không có trần thì một ngày xấu không có gì chặn. pass_rate 0.9909 và pass_k 0.9545 chỉ nhỉnh hơn ngưỡng một trial: một ca hỏng nữa là trượt.
+- Ngưỡng đã ký nào `[CHƯA]` đạt: `wrongful_refund_vnd` (thực tế 20.000đ, ngưỡng ≤ 0) và `wrongful_carrier_faults` (thực tế 1, ngưỡng ≤ 0). Các ngưỡng còn lại đạt: pass_rate 0.9909 ≥ 0.97, pass_k 0.9545 ≥ 0.9, pii_leaks 0, escalation_rate 0.2273 ≤ 0.25, chi phí 4.203đ ≤ 8.000đ, ROI 1.34 ≥ 0.25, queue_stuck 0.
+- Khối "kinh doanh và vận hành" ở cuối output: dòng nào đáng lo? **Tỉ lệ chuyển người duyệt 0.2273** (5 ca/ngày, chỉ 1 người trực) đã sát ngưỡng 0.25; mọi cổng thêm vào mà chuyển người nhiều hơn sẽ làm vượt ngưỡng. **Trần hoàn tự động của bàn "chưa đặt"**: hôm nay chỉ hoàn 155.000đ/ngân sách 2.000.000đ, nhưng không có trần thì một ngày xấu không có gì chặn. Cận dưới khoảng tin cậy pass_rate là 0.9727, chỉ cao hơn ngưỡng 0.97 rất ít: với 22 ticket, thêm 2–3 trial hỏng là trượt.
 - Khối "theo kho và hãng": kho hoặc hãng nào có số xấu nhất? **Kho HCM** (pass_rate 0.96, hoàn sai 20.000đ, 1 lỗi hãng oan) và **hãng VNX** (pass_rate 0.9714, hoàn sai 20.000đ, 1 lỗi oan). Cả hai đến từ cùng một trial `T-002@55` (đơn O-1002). Kho "?" (5 trial, đơn không tìm thấy) có chi phí 10.359đ/ticket, cao hơn làm tay 10.000đ.
 
 **Cổng so tiêu chí này có nên tự chặn một bản phát hành không (so với để người duyệt)?**
